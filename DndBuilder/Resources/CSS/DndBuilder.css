@@ -1,0 +1,73 @@
+﻿header {
+    background-color: white;
+    height: 55px;
+    border-top: 5px solid #D64545;
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 2;
+    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+    width: 100vw;
+}
+
+header .title {
+    color: #27241D;
+    margin: 0;
+    padding: 5px;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    color: #212121;
+}
+
+.hero {
+    padding-top: 55px;
+    background-color: #FAF9F7;
+    min-height: calc(100vh - 55px - 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 425px) {
+    .hero {
+      flex-direction: column;
+    }
+}
+
+.card {
+    background-color: white;
+    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+    border-radius: 5px;
+    padding: 15px;
+    margin: 5px;
+}
+
+.card h2 {
+    text-align: center;
+}
+
+.chip {
+    background-color: #F7C948;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+}
+
+.icon {
+    font-size: 4rem;
+    text-align: center;
+}
+
+footer {
+    background-color: #D64545;
+    height: 20px;
+}
+
+footer p {
+    text-align: center;
+    margin: 0;
+    font-weight: bold;
+    color: #FAF9F7;
+}

@@ -58,6 +58,8 @@
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include="index.html" />
+    <Content Include="Resources\JS\Character.js" />
+    <Content Include="Resources\CSS\DndBuilder.css" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
@@ -69,6 +71,8 @@
     <Folder Include="Resources\" />
     <Folder Include="Controller\" />
     <Folder Include="DndBuilder\" />
+    <Folder Include="Resources\JS\" />
+    <Folder Include="Resources\CSS\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
