@@ -60,6 +60,7 @@
     <Content Include="index.html" />
     <Content Include="Resources\JS\Character.js" />
     <Content Include="Resources\CSS\DndBuilder.css" />
+    <Content Include="CharacterManager\new.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
@@ -70,7 +71,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Controller\" />
-    <Folder Include="DndBuilder\" />
+    <Folder Include="CharacterManager\" />
     <Folder Include="Resources\JS\" />
     <Folder Include="Resources\CSS\" />
   </ItemGroup>

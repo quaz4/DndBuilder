@@ -24,7 +24,7 @@ body {
 .hero {
     padding-top: 55px;
     background-color: #FAF9F7;
-    min-height: calc(100vh - 55px - 20px);
+    min-height: calc(100vh - 55px - 18px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,7 +62,7 @@ body {
 
 footer {
     background-color: #D64545;
-    height: 20px;
+    height: px;
 }
 
 footer p {
@@ -70,4 +70,24 @@ footer p {
     margin: 0;
     font-weight: bold;
     color: #FAF9F7;
+}
+
+.content {
+    padding-top: 55px;
+    background-color: #FAF9F7;
+    height: calc(100vh - 55px - 18px);
+    overflow: scroll;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form-layout {
+    flex-direction: column;
+    display: flex;
+}
+
+.content .card {
+    width: 250px;
 }

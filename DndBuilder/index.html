@@ -5,23 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <title>⚔️DndBuilder|Home</title>
-        <link rel="stylesheet" href="Resources/CSS/DndBuilder.css">
+        
+        <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
+        
+        <script src="/Resources/JS/Character.js"></script>
     </head>
     <body>
         <header>
             <h1 class="title">
-                ⚔️DndBuilder
+                ⚔️ DndBuilder️ 
             </h1>
         </header>
         
         <div class="hero">
-            <div class="card">
+            <div class="card" onclick="navigateTo('/CharacterManager/new.html')">
                 <p class="icon">➕</p>
                 <h2>
                     New Character
                 </h2>
             </div>
-            <div class="card">
+            <div class="card" onclick="navigateTo('/CharacterManager/find.html')">
                 <p class="icon">🔍</p>
                 <h2>
                     Find Character
