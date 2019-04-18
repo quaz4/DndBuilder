@@ -8,9 +8,10 @@
         
         <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
         
-        <script src="/Resources/JS/Character.js"></script>
+        <script src="/Resources/JS/DndBuilder.js"></script>
+        <script src="/Resources/JS/New.js"></script>
     </head>
-    <body>
+    <body onload="init()">
         <header>
             <h1 class="title">
                 ⚔️ DndBuilder️ 
@@ -46,20 +47,20 @@
             
             <div class="card">
                 <label>Race</label>
-                <select required="true">
+                <select id="races" required="true">
                     <option>Loading...</option>
                 </select>
             </div>
             
             <div class="card">
                 <label>Class</label>
-                <select required="true">
+                <select id="classes" required="true" onchange="getClassInfo()">
                     <option>Loading...</option>
                 </select>
             </div>
             
             <div class="card">
-                <label>Spellcaster: No</label>
+                <label id="spellcaster">Spellcaster: N/A</label>
             </div>
             
             <div class="card">

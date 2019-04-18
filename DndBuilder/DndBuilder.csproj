@@ -58,9 +58,10 @@
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include="index.html" />
-    <Content Include="Resources\JS\Character.js" />
+    <Content Include="Resources\JS\DndBuilder.js" />
     <Content Include="Resources\CSS\DndBuilder.css" />
     <Content Include="CharacterManager\new.html" />
+    <Content Include="Resources\JS\New.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
