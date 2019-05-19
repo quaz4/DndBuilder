@@ -52,6 +52,8 @@
     <Reference Include="System.Web.Http.WebHost">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Data.Sqlite" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
@@ -68,13 +70,19 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DndBuilderController.cs" />
+    <Compile Include="Controllers\Database.cs" />
+    <Compile Include="Model\Character.cs" />
+    <Compile Include="Model\Dnd5eApi.cs" />
+    <Compile Include="Model\Api.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Controller\" />
+    <Folder Include="Controllers\" />
     <Folder Include="CharacterManager\" />
     <Folder Include="Resources\JS\" />
     <Folder Include="Resources\CSS\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

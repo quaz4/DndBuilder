@@ -42,12 +42,12 @@
             
             <div class="card">
                 <label>Level</label>
-                <input type="number"  min="1" max="20">
+                <input id="level" value="1" type="number" onchange="updateLevel()" min="1" max="20">
             </div>
             
             <div class="card">
                 <label>Race</label>
-                <select id="races" required="true">
+                <select id="races" required="true" onchange="getRaceInfo()">
                     <option>Loading...</option>
                 </select>
             </div>
@@ -60,11 +60,11 @@
             </div>
             
             <div class="card">
-                <label id="spellcaster">Spellcaster: N/A</label>
+                <label id="spellcaster">Spellcaster: Loading...</label>
             </div>
             
             <div class="card">
-                <label>Hit Points:</label>
+                <label id="hitpoints">Hit Points: Loading...</label>
             </div>
               
         </div>
