@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using DndBuilder.Model;
 using Mono.Data.Sqlite;
+using Newtonsoft.Json.Linq;
 
 namespace DndBuilder.Controllers
 {
@@ -10,7 +14,8 @@ namespace DndBuilder.Controllers
     {
         private IDbConnection dbcon;
 
-        public DndBuilderController() {
+        public DndBuilderController()
+        {
 
             const string connectionString = "URI=file:DndBuilder.db";
             dbcon = new SqliteConnection(connectionString);
@@ -18,7 +23,7 @@ namespace DndBuilder.Controllers
         }
 
         [HttpGet]
-        [Route("character/{name}")] 
+        [Route("character/{name}")]
         public int Get()
         {
             IDbCommand dbcmd = dbcon.CreateCommand();
@@ -63,6 +68,116 @@ namespace DndBuilder.Controllers
         {
             Console.WriteLine(req);
             return 200;
+        }
+
+
+
+
+
+        /* Fuction: getImage
+         * Type: Post
+         * Parameters: zoom level, x coordinate, y coordinate
+         * Return: byte[]
+         * Assertion: function returns a dummy image, regardless of input.
+         * Note: Post version of the previous method.
+         */
+        [HttpGet]
+        [Route("classes")]
+        public string GetClasses()
+        {
+            try
+            {
+                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
+                JObject result = api.GetClasses();
+
+                return result.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch
+            {
+                throw new HttpResponseException(this.Request.CreateResponse<object>
+                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));  
+            }
+
+        }
+
+        /* Fuction: getImage
+         * Type: Post
+         * Parameters: zoom level, x coordinate, y coordinate
+         * Return: byte[]
+         * Assertion: function returns a dummy image, regardless of input.
+         * Note: Post version of the previous method.
+         */
+        [HttpGet]
+        [Route("class/{dndClass}")]
+        public string GetClass(string dndClass)
+        {
+            try
+            {
+                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
+                JObject result = api.GetClass(dndClass);
+
+                return result.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch
+            {
+                // TODO
+                throw new HttpResponseException(this.Request.CreateResponse<object>
+                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+            }
+
+        }
+
+        /* Fuction: getImage
+         * Type: Post
+         * Parameters: zoom level, x coordinate, y coordinate
+         * Return: byte[]
+         * Assertion: function returns a dummy image, regardless of input.
+         * Note: Post version of the previous method.
+         */
+        [HttpGet]
+        [Route("races")]
+        public string GetRaces()
+        {
+            try
+            {
+                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
+                JObject result = api.GetRaces();
+
+                return result.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch
+            {
+                // TODO
+                throw new HttpResponseException(this.Request.CreateResponse<object>
+                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+            }
+        }
+
+        /* Fuction: getImage
+         * Type: Post
+         * Parameters: zoom level, x coordinate, y coordinate
+         * Return: byte[]
+         * Assertion: function returns a dummy image, regardless of input.
+         * Note: Post version of the previous method.
+         */
+        [HttpGet]
+        [Route("race/{dndRace}")]
+        public string GetRace(string dndRace)
+        {
+            try
+            {
+                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
+                JObject result = api.GetRace(dndRace);
+
+                return result.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch
+            {
+                // TODO
+                throw new HttpResponseException(this.Request.CreateResponse<object>
+                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+            }
+
         }
     }
 }

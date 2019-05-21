@@ -75,6 +75,7 @@
     <Compile Include="Model\Character.cs" />
     <Compile Include="Model\Dnd5eApi.cs" />
     <Compile Include="Model\Api.cs" />
+    <Compile Include="Model\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />

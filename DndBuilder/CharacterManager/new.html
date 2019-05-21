@@ -13,7 +13,7 @@
     </head>
     <body onload="init()">
         <header>
-            <h1 class="title">
+            <h1 class="title" onclick="navigateTo('/')">
                 ⚔️ DndBuilder️ 
             </h1>
         </header>
@@ -66,7 +66,51 @@
             <div class="card">
                 <label id="hitpoints">Hit Points: Loading...</label>
             </div>
-              
+            
+            
+            <div class="card">
+                <p id="remainingPoints"><b>Remaining Points: 20</b></p>
+            </div>
+            
+            <div class="card">
+                <label>Constitution</label>
+                <button onclick="incAbilityPoint(0, 'constitution')">+</button>
+                <button onclick="decAbilityPoint(0, 'constitution')">-</button>
+                <p id="constitution">Loading...</p>
+            </div>
+            <div class="card">
+                <label>Dexterity</label>
+                <button onclick="incAbilityPoint(1, 'dexterity')">+</button>
+                <button onclick="decAbilityPoint(1, 'dexterity')">-</button>
+                <p id="dexterity">Loading...</p>
+            </div>
+            <div class="card">
+                <label>Strength</label>
+                <button onclick="incAbilityPoint(2, 'strength')">+</button>
+                <button onclick="decAbilityPoint(2, 'strength')">-</button>
+                <p id="strength">Loading...</p>
+            </div>
+            <div class="card">
+                <label>Charisma</label>
+                <button onclick="incAbilityPoint(3, 'charisma')">+</button>
+                <button onclick="decAbilityPoint(3, 'charisma')">-</button>
+                <p id="charisma">Loading...</p>
+            </div>
+            <div class="card">
+                <label>Intelligence</label>
+                <button onclick="incAbilityPoint(4, 'inteligence')">+</button>
+                <button onclick="decAbilityPoint(4, 'inteligence')">-</button>
+                <p id="intelligence">Loading...</p>
+            </div>
+            <div class="card">
+                <label>Wisdom</label>
+                <button onclick="incAbilityPoint(5, 'wisdom')">+</button>
+                <button onclick="decAbilityPoint(5, 'wisdom')">-</button>
+                <p id="wisdom">Loading...</p>
+            </div>
+            
+            <button id="save">Save</button>
+            <button id="delete">Delete</button>
         </div>
         
         <footer>

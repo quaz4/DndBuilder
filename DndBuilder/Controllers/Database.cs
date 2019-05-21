@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.IO;
 using DndBuilder.Model;
 using Mono.Data.Sqlite;
 using Newtonsoft.Json.Linq;
@@ -9,13 +8,13 @@ namespace DndBuilder
 {
     public class Database
     {
-        public const string DB_NAME = "DndBuilder.sqlite";
+
         IDbConnection dbcon;
 
         public Database()
         {
             // Connect to DB
-            const string connectionString = "URI=file:DndBuilder.db";
+            string connectionString = "URI=file:" + Constants.DB_NAME;
             this.dbcon = new SqliteConnection(connectionString);
             this.dbcon.Open();
         }
@@ -53,6 +52,7 @@ namespace DndBuilder
                 // clean up reader
                 reader.Dispose();
             }
+            // TODO
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
@@ -108,6 +108,7 @@ namespace DndBuilder
             {
                 int result = dbcmd.ExecuteNonQuery();
             }
+            // TODO
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);

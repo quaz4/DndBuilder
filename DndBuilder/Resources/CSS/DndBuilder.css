@@ -13,6 +13,8 @@ header .title {
     color: #27241D;
     margin: 0;
     padding: 5px;
+    display: inline-block;
+    cursor: pointer;
 }
 
 body {
@@ -42,6 +44,10 @@ body {
     border-radius: 5px;
     padding: 15px;
     margin: 5px;
+}
+
+.link {
+    cursor: pointer;
 }
 
 .card h2 {
@@ -85,8 +91,7 @@ footer p {
 .content {
     padding-top: 55px;
     background-color: #FAF9F7;
-    height: calc(100vh - 55px - 18px);
-    overflow-y: scroll;
+    min-height: calc(100vh - 55px - 18px);
     flex-direction: column;
     display: flex;
     align-items: center;
@@ -100,4 +105,37 @@ form-layout {
 
 .content .card {
     width: 250px;
+}
+
+#save:disabled {
+    width: 280px;
+    height: 50px;
+    background-color: none;
+    border: grey;
+    border-radius: 5px;
+    margin: 5px;
+    color: black;
+    font-weight: 900;
+}
+
+#save {
+    width: 280px;
+    height: 50px;
+    background-color: #269ee6;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    color: black;
+    font-weight: 900;
+}
+
+#delete {
+    width: 280px;
+    height: 50px;
+    background-color: #D64545;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    color: white;
+    font-weight: 900;
 }

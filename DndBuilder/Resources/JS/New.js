@@ -1,4 +1,9 @@
-﻿/*
+﻿// Globals
+characterRace = null;
+characterClass = null;
+userAbilityPoints = [0, 0, 0, 0, 0, 0];
+
+/*
 *   Function that wraps a GET request, taking a url and a callback
 *   
 *   url: The address to make the GET requst at
@@ -28,10 +33,6 @@ function get(url, callback) {
 *   Function that initialises the page
 */
 function init() {
-
-    characterRace = null;
-    characterClass = null;
-
     loadRaceOptions();
     loadClassOptions();
 }
@@ -65,12 +66,14 @@ function getRaceInfo(url) {
         url = document.getElementById("races").value;
     }
     
-    get(url, (res) => {
+    get("/race/" + url, (res) => {
         if (res.error) {
             // TODO: Error handling
         } else {
+            res = JSON.parse(res);
             characterRace = res;
             updateHitPointsValue();
+            updateAllAbilityPoints();
         }
     });
 }
@@ -80,10 +83,11 @@ function getClassInfo(url) {
         url = document.getElementById("classes").value;
     }
 
-    get(url, (res) => {
+    get("/class/" + url, (res) => {
         if (res.error) {
             // TODO: Error handling
         } else {
+            res = JSON.parse(res);
             characterClass = res;
             updateSpellcaster();
             updateHitPointsValue();
@@ -92,7 +96,11 @@ function getClassInfo(url) {
 }
 
 function loadRaceOptions() {
-    get("http://www.dnd5eapi.co/api/races", (res) => {
+    get("/races", (res) => {
+        console.log(res);
+        res = JSON.parse(res);
+        console.log(res);
+        
         if (res.error) {
             console.error(res.error);
         } else {
@@ -104,7 +112,7 @@ function loadRaceOptions() {
             
             // Populate races options
             res.results.forEach((element, key) => {
-                races[key] = new Option(element.name, element.url);
+                races[key] = new Option(element.name);
             });
             
             // Fetch race info
@@ -115,7 +123,10 @@ function loadRaceOptions() {
 
 
 function loadClassOptions() {
-    get("http://www.dnd5eapi.co/api/classes", (res) => {
+    get("/classes", (res) => {
+    
+        res = JSON.parse(res);
+    
         if (res.error) {
             console.error(res.error);
         } else {
@@ -127,7 +138,7 @@ function loadClassOptions() {
             
             // Populate classes options
             res.results.forEach((element, key) => {
-                classes[key] = new Option(element.name, element.url);
+                classes[key] = new Option(element.name);
             });
             
             getClassInfo(classes.value);
@@ -147,4 +158,49 @@ function updateLevel() {
     }
     
     updateHitPointsValue();
+}
+
+function displayAbilityPoints(index, id) {
+    let total = characterRace.ability_bonuses[index] + userAbilityPoints[index];
+    document.getElementById(id).innerHTML = characterRace.ability_bonuses[index] + " + " + userAbilityPoints[index] + " = " + total;
+}
+
+// Update card displaying the total remaining ability points
+function displayAbilityPointsTotal() {
+    document.getElementById("remainingPoints").innerHTML = "<b>Remaining Points: " + (20 - calcTotalAbilityPoints());
+}
+
+function incAbilityPoint(index, id) {
+    if (calcTotalAbilityPoints() < 20) {
+        userAbilityPoints[index]++;
+        displayAbilityPoints(index, id);
+        displayAbilityPointsTotal();
+    }
+}
+
+function decAbilityPoint(index, id) {
+    if (userAbilityPoints[index] > 0) {
+        userAbilityPoints[index]--;
+        displayAbilityPoints(index, id);
+        displayAbilityPointsTotal();
+    }
+}
+
+function calcTotalAbilityPoints() {
+    let total = 0;
+
+    userAbilityPoints.forEach((value) => {
+        total = total + value;
+    });
+    
+    return total;
+}
+
+function updateAllAbilityPoints() {
+    displayAbilityPoints(0, "constitution");
+    displayAbilityPoints(1, "dexterity");
+    displayAbilityPoints(2, "strength");
+    displayAbilityPoints(3, "charisma");
+    displayAbilityPoints(4, "intelligence");
+    displayAbilityPoints(5, "wisdom");
 }

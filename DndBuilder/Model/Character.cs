@@ -32,14 +32,15 @@ namespace DndBuilder.Model
             int Level,
             string CharacterRace,
             string CharacterClass,
-            bool SpellCaster,
-            int HitPoints,
-            int Constitution,
-            int Dexterity,
-            int Strength,
-            int Charisma,
-            int Inteligence,
-            int Wisdom
+            JObject UserPoints
+            //bool SpellCaster,
+            //int HitPoints,
+            //int Constitution,
+            //int Dexterity,
+            //int Strength,
+            //int Charisma,
+            //int Inteligence,
+            //int Wisdom
         )
         {
             // Name can be any non empty string
@@ -85,6 +86,20 @@ namespace DndBuilder.Model
                 throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
             }
 
+            // Points must add up to no more than 20
+            int total = 0;
+
+            foreach (var point in UserPoints)
+            {
+                JToken value = point.Value;
+                total = total + (int)value;
+            }
+
+            if (total != 20) 
+            {
+                throw new ArgumentException("Total bonus points must add up to 20");
+            }
+
             // TODO: Validation
             //if (SpellCaster hmmmm)
             //{
@@ -102,10 +117,48 @@ namespace DndBuilder.Model
             //{
             //    throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
             //}
+
+            this.Name = Name;
+            this.Age = Age;
+            this.Gender = Gender;
+            this.Biography = Biography;
+            this.Level = Level;
+            this.CharacterRace = CharacterRace;
+            this.CharacterClass = CharacterClass;
+            //this.SpellCaster = SpellCaster;
+            //this.HitPoints = HitPoints; //TODO: not sure this is right
+            //this.Constitution = Constitution;
+            //this.Dexterity,
+            //this.Strength,
+            //this.Charisma,
+            //this.Inteligence,
+            //this.Wisdom
         }
 
-        public void FetchAbilityScores() {
-            throw new NotImplementedException();
+        public void FetchAttributes() {
+            try
+            {
+                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
+                JObject race = api.GetRace(this.CharacterRace);
+                JObject characterClass = api.GetClass(this.CharacterClass);
+
+                // Spellcaster yes/no
+                if (characterClass["spellcasting"] != null) 
+                {
+                    this.SpellCaster = true;
+                }
+                else
+                {
+                    this.SpellCaster = false;
+                }
+
+                // Ability: Racial + Points = Total Score
+                // this.;
+            }
+            catch
+            { 
+            }
+
         }
 
         public JObject ToJson()

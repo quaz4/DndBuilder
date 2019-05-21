@@ -20,10 +20,6 @@ namespace DndBuilder
             {
                 db.SetupDatabase();
             }
-
-            // TODO: REMOVE ME
-            Dnd5eApi api = new Dnd5eApi("http://www.dnd5eapi.co/api");
-            api.GetRace("Human");
         }
     }
 }

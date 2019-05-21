@@ -11,8 +11,6 @@ namespace DndBuilder.Model
      */
     public class Dnd5eApi: Api
     {
-        public string baseUrl;
-
         public Dnd5eApi(string baseUrl): base(baseUrl)
         {
             // Check that the provided url is at least in the correct format
@@ -117,8 +115,6 @@ namespace DndBuilder.Model
 
             // Using url from object, get the resource at the url
             JObject res = this.GetRequest((string)selected["url"]);
-
-            Console.WriteLine(res);
 
             return res;
         }
