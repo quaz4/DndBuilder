@@ -15,14 +15,7 @@ namespace DndBuilder.Model
         int Level;
         string CharacterRace;
         string CharacterClass;
-        bool SpellCaster;
-        int HitPoints;
-        int Constitution;
-        int Dexterity;
-        int Strength;
-        int Charisma;
-        int Inteligence;
-        int Wisdom;
+        int[] UserPoints;
 
         public Character(
             string Name,
@@ -32,15 +25,7 @@ namespace DndBuilder.Model
             int Level,
             string CharacterRace,
             string CharacterClass,
-            JObject UserPoints
-            //bool SpellCaster,
-            //int HitPoints,
-            //int Constitution,
-            //int Dexterity,
-            //int Strength,
-            //int Charisma,
-            //int Inteligence,
-            //int Wisdom
+            int[] UserPoints
         )
         {
             // Name can be any non empty string
@@ -86,13 +71,12 @@ namespace DndBuilder.Model
                 throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
             }
 
-            // Points must add up to no more than 20
+            // Points must add up to 20
             int total = 0;
 
             foreach (var point in UserPoints)
             {
-                JToken value = point.Value;
-                total = total + (int)value;
+                total = total + point;
             }
 
             if (total != 20) 
@@ -100,23 +84,10 @@ namespace DndBuilder.Model
                 throw new ArgumentException("Total bonus points must add up to 20");
             }
 
-            // TODO: Validation
-            //if (SpellCaster hmmmm)
-            //{
-            //    throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
-            //}
-
-            // See if value is valid
-            //if (HitPoints <= 0)
-            //{
-            //    throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
-            //}
-
-            // Ability scores
-            //if (HitPoints <= 0)
-            //{
-            //    throw new ArgumentOutOfRangeException("CharacterClass has an invalid length of " + CharacterClass.Length);
-            //}
+            if (UserPoints.Length != 6)
+            {
+                throw new ArgumentException("UserPoints array must be of size 6");
+            }
 
             this.Name = Name;
             this.Age = Age;
@@ -125,42 +96,75 @@ namespace DndBuilder.Model
             this.Level = Level;
             this.CharacterRace = CharacterRace;
             this.CharacterClass = CharacterClass;
-            //this.SpellCaster = SpellCaster;
-            //this.HitPoints = HitPoints; //TODO: not sure this is right
-            //this.Constitution = Constitution;
-            //this.Dexterity,
-            //this.Strength,
-            //this.Charisma,
-            //this.Inteligence,
-            //this.Wisdom
+            this.UserPoints = UserPoints;
         }
 
-        public void FetchAttributes() {
-            try
-            {
-                Dnd5eApi api = new Dnd5eApi(Constants.API_URL);
-                JObject race = api.GetRace(this.CharacterRace);
-                JObject characterClass = api.GetClass(this.CharacterClass);
-
-                // Spellcaster yes/no
-                if (characterClass["spellcasting"] != null) 
-                {
-                    this.SpellCaster = true;
-                }
-                else
-                {
-                    this.SpellCaster = false;
-                }
-
-                // Ability: Racial + Points = Total Score
-                // this.;
-            }
-            catch
-            { 
-            }
-
+        public string GetGender()
+        {
+            return this.Gender;
         }
 
+        internal string GetBiography()
+        {
+            return this.Biography;
+        }
+
+        internal string GetClass()
+        {
+            return this.CharacterClass;
+        }
+
+        internal string GetRace()
+        {
+            return this.CharacterRace;
+        }
+
+        internal int GetLevel()
+        {
+            return this.Level;
+        }
+
+        internal int GetAge()
+        {
+            return this.Age;
+        }
+
+        public string GetName()
+        {
+            return this.Name;
+        }
+
+        public int GetConstitution() 
+        {
+            return this.UserPoints[0];
+        }
+
+        public int GetDexterity()
+        {
+            return this.UserPoints[1];
+        }
+
+        public int GetStrength()
+        {
+            return this.UserPoints[2];
+        }
+
+        public int GetCharisma()
+        {
+            return this.UserPoints[3];
+        }
+
+        public int GetIntelligence()
+        {
+            return this.UserPoints[4];
+        }
+
+        public int GetWisdom()
+        {
+            return this.UserPoints[5];
+        }
+
+        // TODO
         public JObject ToJson()
         {
             return new JObject();

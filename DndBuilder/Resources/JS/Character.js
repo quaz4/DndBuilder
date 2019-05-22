@@ -60,7 +60,7 @@ var Character = class Character {
             throw TypeError("Age must be a number");
         }
         
-        if(age <= 0 || age >= 500) {
+        if(age < 0 || age > 500) {
             throw RangeError("Age must be be >= 0 and <= 500");
         }
         

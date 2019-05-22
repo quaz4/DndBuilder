@@ -158,7 +158,7 @@ function updateLevel() {
 
 function displayAbilityPoints(index, id) {
     let total = characterRace.ability_bonuses[index] + userAbilityPoints[index];
-    document.getElementById(id).innerHTML = characterRace.ability_bonuses[index] + " + " + userAbilityPoints[index] + " = " + total;
+    document.getElementById(id).innerHTML = userAbilityPoints[index] + " + " + characterRace.ability_bonuses[index]  + " = " + total;
 }
 
 // Update card displaying the total remaining ability points

@@ -66,6 +66,8 @@
     <Content Include="Resources\JS\New.js" />
     <Content Include="Resources\JS\Character.js" />
     <Content Include="Resources\JS\Util.js" />
+    <Content Include="CharacterManager\find.html" />
+    <Content Include="Resources\JS\Find.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">

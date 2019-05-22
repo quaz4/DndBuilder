@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>⚔️DndBuilder|Home</title>
+        
+        <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
+        
+        <script src="/Resources/JS/Util.js"></script>
+        <script src="/Resources/JS/Find.js"></script>
+        <script src="/Resources/JS/Character.js"></script>
+        <script src="/Resources/JS/DndBuilder.js"></script>
+    </head>
+    <body onload="init()">
+        <header>
+            <h1 class="title" onclick="navigateTo('/')">
+                ⚔️ DndBuilder️ 
+            </h1>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <label>Load by Name</label>
+                <input id="name" type="text" onchange="nameChanged()">
+            </div>
+        </div>
+        
+        <footer>
+            <p>Built by William Stewart</p>
+        </footer>
+    </body>
+</html>
