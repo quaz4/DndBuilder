@@ -64,6 +64,8 @@
     <Content Include="Resources\CSS\DndBuilder.css" />
     <Content Include="CharacterManager\new.html" />
     <Content Include="Resources\JS\New.js" />
+    <Content Include="Resources\JS\Character.js" />
+    <Content Include="Resources\JS\Util.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">

@@ -12,3 +12,4 @@
 /home/will/Projects/DndBuilder/DndBuilder/obj/Debug/DndBuilder.csproj.CopyComplete
 /home/will/Projects/DndBuilder/DndBuilder/obj/Debug/DndBuilder.dll
 /home/will/Projects/DndBuilder/DndBuilder/obj/Debug/DndBuilder.pdb
+/home/will/Projects/DndBuilder/DndBuilder/obj/Debug/DndBuilder.csprojAssemblyReference.cache

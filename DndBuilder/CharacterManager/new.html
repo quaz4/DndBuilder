@@ -8,6 +8,8 @@
         
         <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
         
+        <script src="/Resources/JS/Util.js"></script>
+        <script src="/Resources/JS/Character.js"></script>
         <script src="/Resources/JS/DndBuilder.js"></script>
         <script src="/Resources/JS/New.js"></script>
     </head>
@@ -21,23 +23,22 @@
         <div class="content">
             <div class="card">
                 <label>Name</label>
-                <input type="text">
+                <input id="name" type="text" onchange="nameChanged()">
             </div>
             
             <div class="card">
                 <label>Age</label>
-                <input type="number" min="0" max="500">
+                <input id="age" type="number" min="0" max="500" onchange="ageChanged()">
             </div>
-            
             
             <div class="card">
                 <label>Gender</label>
-                <input type="text">
+                <input id="gender" type="text" onchange="genderChanged()">
             </div>
             
             <div class="card">
                 <label>Biography</label>
-                <textarea type="text" maxlength="500"></textarea>
+                <textarea id="biography" type="text" maxlength="500" onchange="biographyChanged()"></textarea>
             </div>
             
             <div class="card">
@@ -98,8 +99,8 @@
             </div>
             <div class="card">
                 <label>Intelligence</label>
-                <button onclick="incAbilityPoint(4, 'inteligence')">+</button>
-                <button onclick="decAbilityPoint(4, 'inteligence')">-</button>
+                <button onclick="incAbilityPoint(4, 'intelligence')">+</button>
+                <button onclick="decAbilityPoint(4, 'intelligence')">-</button>
                 <p id="intelligence">Loading...</p>
             </div>
             <div class="card">
