@@ -81,7 +81,7 @@ namespace DndBuilder
 
                 string sql =
                     "CREATE TABLE Characters (" +
-                        "character_id INT NOT NULL UNIQUE PRIMARY KEY," +
+                        "character_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "name TEXT NOT NULL," +
                         "age INT NOT NULL CHECK(age > 0 AND age < 500)," +
                         "gender TEXT NOT NULL," +
@@ -118,11 +118,13 @@ namespace DndBuilder
             try
             {
                 //Crease the database connection object – assumes the database has been created.
-                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source=MyDB.sqlite;Version=3;"))
+                using(SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + "; Version=3;"))
                 {
+                    m_dbConn.Open();
+
                     // Set up the query with place holders
                     SqliteCommand insertSQL = new SqliteCommand(
-                        "INSERT INTO Characters(" +
+                        "INSERT INTO Characters( " +
                             "name," +
                             "age," +
                             "gender," +
@@ -137,19 +139,19 @@ namespace DndBuilder
                             "intelligence," +
                             "wisdom) " +
                         "VALUES(" +
-                            "@name," +
-                            "@age," +
-                            "@gender," +
-                            "@biography," +
-                            "@class," +
-                            "@race," +
-                            "@level," +
-                            "@constitution," +
-                            "@dexterity," +
-                            "@strength," +
-                            "@charisma," +
-                            "@intelligence," +
-                            "@wisdom" +
+                            "@name, " +
+                            "@age, " +
+                            "@gender, " +
+                            "@biography, " +
+                            "@class, " +
+                            "@race, " +
+                            "@level, " +
+                            "@constitution, " +
+                            "@dexterity, " +
+                            "@strength, " +
+                            "@charisma, " +
+                            "@intelligence, " +
+                            "@wisdom " +
                         ")", m_dbConn);
 
                     insertSQL.Parameters.Add(new SqliteParameter("name", character.GetName()));
@@ -158,26 +160,152 @@ namespace DndBuilder
                     insertSQL.Parameters.Add(new SqliteParameter("biography", character.GetBiography()));
                     insertSQL.Parameters.Add(new SqliteParameter("class", character.GetClass()));
                     insertSQL.Parameters.Add(new SqliteParameter("race", character.GetRace()));
+                    insertSQL.Parameters.Add(new SqliteParameter("level", character.GetLevel()));
 
                     insertSQL.Parameters.Add(new SqliteParameter("constitution", character.GetConstitution()));
                     insertSQL.Parameters.Add(new SqliteParameter("dexterity", character.GetDexterity()));
                     insertSQL.Parameters.Add(new SqliteParameter("strength", character.GetStrength()));
                     insertSQL.Parameters.Add(new SqliteParameter("charisma", character.GetCharisma()));
-                    insertSQL.Parameters.Add(new SqliteParameter("intelligence", character.GetIntelligence()));
+                    insertSQL.Parameters.Add(new SqliteParameter("intelligence", character.Intelligence));
                     insertSQL.Parameters.Add(new SqliteParameter("wisdom", character.GetWisdom()));
 
                     insertSQL.ExecuteNonQuery(); //execute the query
+
+                    m_dbConn.Close();
                 }
             }
             catch (Exception e) when (e is SqliteException || e is InvalidCastException)
             {
                 //error handling goes here
+                Console.WriteLine(e);
             }
         }
 
-        public Character Find(string name)
+        public void Update(Character character)
         {
-            return null;
+            try
+            {
+                //Crease the database connection object – assumes the database has been created.
+                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + "; Version=3;"))
+                {
+                    m_dbConn.Open();
+
+                    // Set up the query with place holders
+                    SqliteCommand insertSQL = new SqliteCommand(
+                        "UPDATE Characters( " +
+                            "name = @name" +
+                            "age = @age," +
+                            "gender = @gender," +
+                            "biography = @biography," +
+                            "class = @class," +
+                            "race = @race," +
+                            "level = @level," +
+                            "constitution = @constitution," +
+                            "dexterity = @dexterity," +
+                            "strength = @strength," +
+                            "charisma = @charisma," +
+                            "intelligence = @intelligence," +
+                            "wisdom = @wisdom" +
+                        ") ", m_dbConn);
+
+                    insertSQL.Parameters.Add(new SqliteParameter("name", character.GetName()));
+                    insertSQL.Parameters.Add(new SqliteParameter("age", character.GetAge()));
+                    insertSQL.Parameters.Add(new SqliteParameter("gender", character.GetGender()));
+                    insertSQL.Parameters.Add(new SqliteParameter("biography", character.GetBiography()));
+                    insertSQL.Parameters.Add(new SqliteParameter("class", character.GetClass()));
+                    insertSQL.Parameters.Add(new SqliteParameter("race", character.GetRace()));
+                    insertSQL.Parameters.Add(new SqliteParameter("level", character.GetLevel()));
+
+                    insertSQL.Parameters.Add(new SqliteParameter("constitution", character.GetConstitution()));
+                    insertSQL.Parameters.Add(new SqliteParameter("dexterity", character.GetDexterity()));
+                    insertSQL.Parameters.Add(new SqliteParameter("strength", character.GetStrength()));
+                    insertSQL.Parameters.Add(new SqliteParameter("charisma", character.GetCharisma()));
+                    insertSQL.Parameters.Add(new SqliteParameter("intelligence", character.Intelligence));
+                    insertSQL.Parameters.Add(new SqliteParameter("wisdom", character.GetWisdom()));
+
+                    insertSQL.ExecuteNonQuery(); //execute the query
+
+                    m_dbConn.Close();
+                }
+            }
+            catch (Exception e) when (e is SqliteException || e is InvalidCastException)
+            {
+                //error handling goes here
+                Console.WriteLine(e);
+            }
+        }
+
+        public Character Fetch(string name)
+        {
+            Character character = null;
+
+            try
+            {
+                //Crease the database connection object – assumes the database has been created.
+                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + "; Version=3;"))
+                {
+                    m_dbConn.Open();
+
+                    // Set up the query with place holders
+                    SqliteCommand existsSQL = new SqliteCommand(
+                        "SELECT" +
+                            "name," +
+                            "age," +
+                            "gender," +
+                            "biography," +
+                            "class," +
+                            "race," +
+                            "level," +
+                            "constitution," +
+                            "dexterity," +
+                            "strength," +
+                            "charisma," +
+                            "intelligence," +
+                            "wisdom" +
+                        "FROM Characters " +
+                        "WHERE name LIKE @name"
+                    , m_dbConn);
+
+                    existsSQL.Parameters.Add(new SqliteParameter("name", name));
+
+                    SqliteDataReader reader = existsSQL.ExecuteReader(); //execute the query;
+
+                    reader.Read();
+
+                    int[] ap = {
+                            reader.GetInt32(7), // Constitution
+                            reader.GetInt32(8), // Dexterity
+                            reader.GetInt32(9), // Strength
+                            reader.GetInt32(10), // Charisma
+                            reader.GetInt32(11), // Intelligence
+                            reader.GetInt32(12) // Wisdom
+                    };
+
+                    character = new Character(
+                        reader.GetString(0), // Name
+                        reader.GetInt32(1), // Age
+                        reader.GetString(2), // Gender
+                        reader.GetString(3), // Biography
+                        reader.GetInt32(4), // Level
+                        reader.GetString(5), // Race
+                        reader.GetString(6), // Class
+                        ap
+                    );
+
+                    // clean up reader
+                    reader.Dispose();
+
+                    m_dbConn.Close();
+                }
+            }
+            catch (Exception e) when (e is SqliteException || e is InvalidCastException)
+            {
+                // TODO: error handling goes here
+                Console.WriteLine(e);
+                character = null;
+            }
+
+            return character;
         }
 
         public bool Exists(string name)
@@ -187,27 +315,37 @@ namespace DndBuilder
             try
             {
                 //Crease the database connection object – assumes the database has been created.
-                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source=MyDB.sqlite;Version=3;"))
+                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + "; Version=3;"))
                 {
+                    m_dbConn.Open();
+
                     // Set up the query with place holders
-                    SqliteCommand deleteSQL = new SqliteCommand(
-                        "SELECT FROM Characters" +
-                        "WHERE name = '@name' COLLATE NOCASE"
+                    SqliteCommand existsSQL = new SqliteCommand(
+                        "SELECT COUNT(name) as found FROM Characters " +
+                        "WHERE name LIKE @name"
                     , m_dbConn);
 
-                    deleteSQL.Parameters.Add(new SqliteParameter("name", name));
+                    existsSQL.Parameters.Add(new SqliteParameter("name", name));
 
-                    int changed = deleteSQL.ExecuteNonQuery(); //execute the query
+                    SqliteDataReader reader = existsSQL.ExecuteReader(); //execute the query;
 
-                    if(changed > 0)
+                    reader.Read();
+
+                    if(reader.GetInt32(0) > 0)
                     {
                         found = true;
                     }
+
+                    // clean up reader
+                    reader.Dispose();
+
+                    m_dbConn.Close();
                 }
             }
             catch (Exception e) when (e is SqliteException || e is InvalidCastException)
             {
-                //error handling goes here
+                // TODO: error handling goes here
+                Console.WriteLine(e);
             }
 
             return found;
@@ -218,11 +356,11 @@ namespace DndBuilder
             try
             {
                 //Crease the database connection object – assumes the database has been created.
-                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source=MyDB.sqlite;Version=3;"))
+                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + ";Version=3;"))
                 {
                     // Set up the query with place holders
                     SqliteCommand deleteSQL = new SqliteCommand(
-                        "DELETE FROM Characters" +
+                        "DELETE FROM Characters " +
                         "WHERE name = '@name' COLLATE NOCASE"
                     , m_dbConn);
 

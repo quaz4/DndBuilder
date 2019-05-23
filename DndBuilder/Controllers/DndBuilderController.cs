@@ -12,41 +12,35 @@ namespace DndBuilder.Controllers
 {
     public class DndBuilderController : ApiController
     {
-        private IDbConnection dbcon;
-
         public DndBuilderController()
         {
-
-            const string connectionString = "URI=file:DndBuilder.db";
-            dbcon = new SqliteConnection(connectionString);
-            dbcon.Open();
         }
 
-        [HttpGet]
-        [Route("character/{name}")]
-        public int Get()
-        {
-            IDbCommand dbcmd = dbcon.CreateCommand();
-            const string sql =
-            "SELECT \n    name\nFROM \n    sqlite_master \nWHERE \n    type ='table' AND \n    name NOT LIKE 'sqlite_%';";
-            //"CREATE TABLE Persons (PersonID int, LastName varchar(255), FirstName varchar(255), Address varchar(255), City varchar(255));";
-            dbcmd.CommandText = sql;
-            IDataReader reader = dbcmd.ExecuteReader();
+        //[HttpGet]
+        //[Route("character/{name}")]
+        //public int Get()
+        //{
+        //    IDbCommand dbcmd = dbcon.CreateCommand();
+        //    const string sql =
+        //    "SELECT \n    name\nFROM \n    sqlite_master \nWHERE \n    type ='table' AND \n    name NOT LIKE 'sqlite_%';";
+        //    //"CREATE TABLE Persons (PersonID int, LastName varchar(255), FirstName varchar(255), Address varchar(255), City varchar(255));";
+        //    dbcmd.CommandText = sql;
+        //    IDataReader reader = dbcmd.ExecuteReader();
 
-            Console.WriteLine(reader.GetSchemaTable());
+        //    Console.WriteLine(reader.GetSchemaTable());
 
-            while (reader.Read())
-            {
-                Console.WriteLine(reader.GetString(0));
-            }
-            // clean up
-            reader.Dispose();
-            dbcmd.Dispose();
-            dbcon.Close();
+        //    while (reader.Read())
+        //    {
+        //        Console.WriteLine(reader.GetString(0));
+        //    }
+        //    // clean up
+        //    reader.Dispose();
+        //    dbcmd.Dispose();
+        //    dbcon.Close();
 
 
-            return 6;
-        }
+        //    return 6;
+        //}
 
         [HttpPut]
         [Route("character/{name}")]
@@ -64,15 +58,90 @@ namespace DndBuilder.Controllers
          */
         [HttpPost]
         [Route("character")]
-        public int Post([FromBody]Dictionary<string, object> req)
+        public void Post([FromBody]Dictionary<string, object> req)
         {
-            Console.WriteLine(req);
-            return 200;
+            try
+            {
+                JArray jArray = JArray.Parse(req["userPoints"].ToString());
+                int[] ap = jArray.ToObject<int[]>();
+
+                Character newCharacter = new Character(
+                    req["name"].ToString(),
+                    Convert.ToInt32(req["age"]), //Age
+                    req["gender"].ToString(),
+                    req["biography"].ToString(),
+                    Convert.ToInt32(req["level"]), //Level
+                    req["characterClass"].ToString(),
+                    req["characterRace"].ToString(),
+                    ap
+                );
+
+                Database db = new Database();
+                db.Insert(newCharacter);
+            }
+            // TODO
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
+        /* Fuction: getImage
+         * Type: Post
+         * Parameters: zoom level, x coordinate, y coordinate
+         * Return: byte[]
+         * Assertion: function returns a dummy image, regardless of input.
+         * Note: Post version of the previous method.
+         */
+        [HttpPut]
+        [Route("character")]
+        public void UpdateCharacter([FromBody]Dictionary<string, object> req)
+        {
+            try
+            {
+                JArray jArray = JArray.Parse(req["userPoints"].ToString());
+                int[] ap = jArray.ToObject<int[]>();
 
+                Character newCharacter = new Character(
+                    req["name"].ToString(),
+                    Convert.ToInt32(req["age"]), //Age
+                    req["gender"].ToString(),
+                    req["biography"].ToString(),
+                    Convert.ToInt32(req["level"]), //Level
+                    req["characterClass"].ToString(),
+                    req["characterRace"].ToString(),
+                    ap
+                );
 
+                Database db = new Database();
+                db.Update(newCharacter);
+            }
+            // TODO
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
 
+        [HttpGet]
+        [Route("character/exists/{name}")]
+        public bool Exists(string name)
+        {
+            bool exists = false;
+
+            try
+            {
+                Database db = new Database();
+                exists = db.Exists(name);
+            }
+            // TODO
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return exists;
+        }
 
         /* Fuction: getImage
          * Type: Post

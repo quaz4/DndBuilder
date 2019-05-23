@@ -6,10 +6,10 @@
  *   age, int, character age, between >= 0 and <= 500
  *   characterClass, 
  *   characterRace,
- *   bonuses,
+ *   userPoints,
  */
 var Character = class Character {
-    constructor(name, gender, biography, level, age, characterClass, characterRace, bonuses) {
+    constructor(name, gender, biography, level, age, characterClass, characterRace, userPoints) {
         this.setName(name);
         this.setGender(gender);
         this.setBiography(biography);
@@ -17,7 +17,7 @@ var Character = class Character {
         this.setAge(age);
         this.setCharacterClass(characterClass);
         this.setCharacterRace(characterRace);
-        this.setBonuses(bonuses);
+        this.setUserPoints(userPoints);
     }
     
     /*
@@ -85,48 +85,48 @@ var Character = class Character {
     }
     
     /*
-     * Bonuses setter
-     * Params: bonusesArray, array of ints of size 6, adds up to a max of 20
+     * userPoints setter
+     * Params: userPointsArray, array of ints of size 6, adds up to a max of 20
      * Throws: TypeError, RangeError
      */
-    setBonuses(bonusesArray) {
+    setUserPoints(userPointsArray) {
         // Ensure the array is of size 6
-        console.log(bonusesArray.length);
-        if(bonusesArray.length != 6) {
-            throw RangeError("Bonuses array must have a length of 6");
+        console.log(userPointsArray.length);
+        if(userPointsArray.length != 6) {
+            throw RangeError("userPointsArray array must have a length of 6");
         }
         
         // Ensure each value in the array is a number
-        bonusesArray.forEach((value, index) => {
+        userPointsArray.forEach((value, index) => {
             if(isNaN(value)) {
-                throw TypeError("Bonus points at index " + index + " must be a number");
+                throw TypeError("userPointsArray points at index " + index + " must be a number");
             }
         });
         
         // Calculate total points in array
         let total = 0;
     
-        bonusesArray.forEach((value) => {
+        userPointsArray.forEach((value) => {
            total = total + value; 
         });
         
         if(total > 20) {
-            throw RangeError("Total bonus points cannot be larger than 20");
+            throw RangeError("Total ability points cannot be larger than 20");
         }
         
-        this.bonuses = bonusesArray;
+        this.userPoints = userPointsArray;
     }
     
     /*
-     * Total Bonus Points getter
-     * Returns the total number of assigned bonus points
+     * Total Ability Points getter
+     * Returns the total number of assigned points
      * Params: none
      * Throws: none
      */
-    getBonusesTotal() {
+    getUserPointsTotal() {
         let total = 0;
     
-        this.bonuses.forEach((value) => {
+        this.userPoints.forEach((value) => {
            total = total + value; 
         });
         

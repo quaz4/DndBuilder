@@ -21,7 +21,7 @@ function init() {
                 1, // Age
                 characterClass, // Class
                 characterRace, // Race
-                userAbilityPoints // Bonus Points
+                userAbilityPoints // Ability Points
             );
             
             console.log(character);
@@ -163,13 +163,13 @@ function displayAbilityPoints(index, id) {
 
 // Update card displaying the total remaining ability points
 function displayAbilityPointsTotal() {
-    document.getElementById("remainingPoints").innerHTML = "<b>Remaining Points: " + (20 - character.getBonusesTotal());
+    document.getElementById("remainingPoints").innerHTML = "<b>Remaining Points: " + (20 - character.getUserPointsTotal());
 }
 
 function incAbilityPoint(index, id) {
     if (calcTotalAbilityPoints() < 20) {
         userAbilityPoints[index]++;
-        character.setBonuses(userAbilityPoints);
+        character.setUserPoints(userAbilityPoints);
         displayAbilityPoints(index, id);
         displayAbilityPointsTotal();
         console.log(character);
@@ -179,7 +179,7 @@ function incAbilityPoint(index, id) {
 function decAbilityPoint(index, id) {
     if (userAbilityPoints[index] > 0) {
         userAbilityPoints[index]--;
-        character.setBonuses(userAbilityPoints);
+        character.setUserPoints(userAbilityPoints);
         displayAbilityPoints(index, id);
         displayAbilityPointsTotal();
     }

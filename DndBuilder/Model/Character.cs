@@ -99,75 +99,53 @@ namespace DndBuilder.Model
             this.UserPoints = UserPoints;
         }
 
-        public string GetGender()
-        {
-            return this.Gender;
-        }
+        public string GetGender() => this.Gender;
 
-        internal string GetBiography()
-        {
-            return this.Biography;
-        }
+        internal string GetBiography() => this.Biography;
 
-        internal string GetClass()
-        {
-            return this.CharacterClass;
-        }
+        internal string GetClass() => this.CharacterClass;
 
-        internal string GetRace()
-        {
-            return this.CharacterRace;
-        }
+        internal string GetRace() => this.CharacterRace;
 
-        internal int GetLevel()
-        {
-            return this.Level;
-        }
+        internal int GetLevel() => this.Level;
 
-        internal int GetAge()
-        {
-            return this.Age;
-        }
+        internal int GetAge() => this.Age;
 
-        public string GetName()
-        {
-            return this.Name;
-        }
+        public string GetName() => this.Name;
 
-        public int GetConstitution() 
-        {
-            return this.UserPoints[0];
-        }
+        public int GetConstitution() => this.UserPoints[0];
 
-        public int GetDexterity()
-        {
-            return this.UserPoints[1];
-        }
+        public int GetDexterity() => this.UserPoints[1];
 
-        public int GetStrength()
-        {
-            return this.UserPoints[2];
-        }
+        public int GetStrength() => this.UserPoints[2];
 
-        public int GetCharisma()
-        {
-            return this.UserPoints[3];
-        }
+        public int GetCharisma() => this.UserPoints[3];
 
-        public int GetIntelligence()
-        {
-            return this.UserPoints[4];
-        }
+        public int Intelligence => this.UserPoints[4];
 
-        public int GetWisdom()
-        {
-            return this.UserPoints[5];
-        }
+        public int GetWisdom() => this.UserPoints[5];
 
-        // TODO
         public JObject ToJson()
         {
-            return new JObject();
+            JObject character = new JObject(
+                new JProperty("name", this.Name),
+                new JProperty("age", this.Age),
+                new JProperty("level", this.Level),
+                new JProperty("gender", this.Gender),
+                new JProperty("biography", this.Biography),
+                new JProperty("characterClass", this.CharacterClass),
+                new JProperty("characterRace", this.CharacterRace),
+                new JProperty("userPoints", new JArray(
+                    new JValue(this.UserPoints[0]),
+                    new JValue(this.UserPoints[1]),
+                    new JValue(this.UserPoints[2]),
+                    new JValue(this.UserPoints[3]),
+                    new JValue(this.UserPoints[4]),
+                    new JValue(this.UserPoints[5])
+                ))
+            );
+
+            return character;
         }
     }
 }
