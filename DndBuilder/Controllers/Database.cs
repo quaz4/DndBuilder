@@ -358,21 +358,79 @@ namespace DndBuilder
                 //Crease the database connection object – assumes the database has been created.
                 using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + ";Version=3;"))
                 {
+                    m_dbConn.Open();
+
                     // Set up the query with place holders
                     SqliteCommand deleteSQL = new SqliteCommand(
                         "DELETE FROM Characters " +
-                        "WHERE name = '@name' COLLATE NOCASE"
+                        "WHERE name LIKE @name"
                     , m_dbConn);
 
                     deleteSQL.Parameters.Add(new SqliteParameter("name", name));
 
                     deleteSQL.ExecuteNonQuery(); //execute the query
+
+                    m_dbConn.Close();
                 }
             }
             catch (Exception e) when (e is SqliteException || e is InvalidCastException)
             {
                 //error handling goes here
+                Console.WriteLine(e);
             }
+        }
+
+        public JObject ListPage(int page)
+        {
+            JObject rVal = new JObject();
+            JArray jArray = new JArray();
+
+            try
+            {
+                //Crease the database connection object – assumes the database has been created.
+                using (SqliteConnection m_dbConn = new SqliteConnection("Data Source =" + Constants.DB_NAME + "; Version=3;"))
+                {
+                    m_dbConn.Open();
+
+                    // Set up the query with place holders
+                    SqliteCommand existsSQL = new SqliteCommand(
+                        "SELECT " +
+                            "name, " +
+                            "class, " +
+                            "race, " +
+                            "level " +
+                        "FROM Characters " +
+                        "LIMIT " + Constants.PAGE_LIMIT + " " +
+                        "OFFSET " + Constants.PAGE_LIMIT * page
+                    , m_dbConn);
+
+                    SqliteDataReader reader = existsSQL.ExecuteReader(); //execute the query;
+
+                    while(reader.Read())
+                    {
+                        jArray.Add(new JObject(
+                            new JProperty("name", reader.GetString(0)),
+                            new JProperty("class", reader.GetString(1)),
+                            new JProperty("race", reader.GetString(2)),
+                            new JProperty("level", reader.GetInt32(3))     
+                        ));
+                    }
+
+                    // clean up reader
+                    reader.Dispose();
+
+                    m_dbConn.Close();
+                }
+            }
+            catch (Exception e) when (e is SqliteException || e is InvalidCastException)
+            {
+                // TODO: error handling goes here
+                Console.WriteLine(e);
+            }
+
+            rVal.Add(new JProperty("results", jArray));
+
+            return rVal;
         }
     }
 }

@@ -270,3 +270,11 @@ function levelChanged() {
         }
     }
 }
+
+function onSave() {
+    createCharacter(character);
+}
+
+function onDelete() {
+    deleteCharacter(character.name);
+}

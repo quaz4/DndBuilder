@@ -37,6 +37,7 @@ namespace DndBuilder
 
             // Apply this GLOBALLY so that we don 't have to be bothered
             // with it during other JSON operations
+            // TODO: was uncommented
             Newtonsoft.Json.JsonConvert.DefaultSettings = () =>
             new Newtonsoft.Json.JsonSerializerSettings
             {

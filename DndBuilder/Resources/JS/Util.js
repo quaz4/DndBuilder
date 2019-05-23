@@ -31,12 +31,12 @@ function post(url, body) {
         let request = new XMLHttpRequest();
     
         request.open("POST", url, true);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        request.setRequestHeader("Content-Type", "application/json");
         
         request.onreadystatechange = () => {
 
             if (request.readyState == 4) {
-                if (request.status == 200) {
+                if (request.status == 201) {
                     resolve();
                 } else {
                     reject({ error: request.status});
@@ -53,7 +53,7 @@ function put(url, body) {
         let request = new XMLHttpRequest();
     
         request.open("PUT", url, true);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        request.setRequestHeader("Content-Type", "application/json");
         
         request.onreadystatechange = () => {
 
@@ -67,5 +67,26 @@ function put(url, body) {
         };
         
         request.send(JSON.stringify(body));
+    });
+}
+
+function deleteRequest(url) {
+    return new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest();
+    
+        request.open("DELETE", url, true);
+
+        request.onreadystatechange = () => {
+
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    resolve();
+                } else {
+                    reject({ error: request.status});
+                }
+            }
+        };
+        
+        request.send();
     });
 }

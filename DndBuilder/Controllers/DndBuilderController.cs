@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using DndBuilder.Model;
 using Mono.Data.Sqlite;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DndBuilder.Controllers
@@ -14,39 +15,6 @@ namespace DndBuilder.Controllers
     {
         public DndBuilderController()
         {
-        }
-
-        //[HttpGet]
-        //[Route("character/{name}")]
-        //public int Get()
-        //{
-        //    IDbCommand dbcmd = dbcon.CreateCommand();
-        //    const string sql =
-        //    "SELECT \n    name\nFROM \n    sqlite_master \nWHERE \n    type ='table' AND \n    name NOT LIKE 'sqlite_%';";
-        //    //"CREATE TABLE Persons (PersonID int, LastName varchar(255), FirstName varchar(255), Address varchar(255), City varchar(255));";
-        //    dbcmd.CommandText = sql;
-        //    IDataReader reader = dbcmd.ExecuteReader();
-
-        //    Console.WriteLine(reader.GetSchemaTable());
-
-        //    while (reader.Read())
-        //    {
-        //        Console.WriteLine(reader.GetString(0));
-        //    }
-        //    // clean up
-        //    reader.Dispose();
-        //    dbcmd.Dispose();
-        //    dbcon.Close();
-
-
-        //    return 6;
-        //}
-
-        [HttpPut]
-        [Route("character/{name}")]
-        public int Put([FromBody]Dictionary<string, object> req)
-        {
-            return 6;
         }
 
         /* Fuction: getImage
@@ -58,7 +26,7 @@ namespace DndBuilder.Controllers
          */
         [HttpPost]
         [Route("character")]
-        public void Post([FromBody]Dictionary<string, object> req)
+        public IHttpActionResult Post([FromBody]Dictionary<string, object> req)
         {
             try
             {
@@ -83,6 +51,27 @@ namespace DndBuilder.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
+            }
+
+            return StatusCode(HttpStatusCode.Created);
+        }
+
+        [HttpGet]
+        [Route("character/page/{page}")]
+        public string ListPage(int page)
+        {
+
+
+            try
+            {
+                Database db = new Database();
+                return db.ListPage(page).ToString(Formatting.None);
+            }
+            // TODO
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
         }
 
@@ -141,6 +130,22 @@ namespace DndBuilder.Controllers
             }
 
             return exists;
+        }
+
+        [HttpDelete]
+        [Route("character/{name}")]
+        public void DeleteCharacter(string name)
+        {
+            try
+            {
+                Database db = new Database();
+                db.Delete(name);
+            }
+            // TODO
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         /* Fuction: getImage

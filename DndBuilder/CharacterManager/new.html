@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
         
         <script src="/Resources/JS/Util.js"></script>
+        <script src="/Resources/JS/Api.js"></script>
         <script src="/Resources/JS/Character.js"></script>
         <script src="/Resources/JS/DndBuilder.js"></script>
         <script src="/Resources/JS/New.js"></script>
@@ -110,8 +111,8 @@
                 <p id="wisdom">Loading...</p>
             </div>
             
-            <button id="save">Save</button>
-            <button id="delete">Delete</button>
+            <button id="save" onclick="onSave()">Save</button>
+            <button id="delete" onclick="onDelete()">Delete</button>
         </div>
         
         <footer>
