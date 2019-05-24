@@ -3,41 +3,109 @@ characterRace = null;
 characterClass = null;
 userAbilityPoints = [0, 0, 0, 0, 0, 0];
 character = null;
+uniqueName = false;
 
 /*
  * Function that initialises the page
  */
 function init() {
-    Promise.all([
-        loadRaceOptions(),
-        loadClassOptions()
-    ]).then(() => {
-        try {
-            character = new Character(
-                "John Smith", //Name
-                "Male", // Gender
-                "I love adventure", // Biography 
-                1, // Level
-                1, // Age
-                characterClass, // Class
-                characterRace, // Race
-                userAbilityPoints // Ability Points
-            );
-            
-            console.log(character);
-            
-            updateHitPointsValue();
-            updateSpellcaster();
-            
-        } catch(error) {
-            if (typeof error == "TypeError") { 
-                console.log("Caching");
-            } else {
-                console.log(typeof error)
-            }
-            console.log("Catch");
-            console.log(error);
-        } 
+    let params = new URLSearchParams(document.location.search);
+    let name = params.get("name"); 
+    
+    if(name != null) {
+        name = unescape(params.get("name"));
+        createNew().then(() => {
+            loadExisting(name);
+        });
+        document.getElementById("save").innerHTML = "Update";
+        
+    } else {
+        document.getElementById("delete").setAttribute("hidden", true);
+        
+        createNew();
+    }
+}
+
+function checkIfUnique(name) {
+    checkIfExists(name).then((res) => {
+        if (res) {
+            alert("That name is already taken, please enter another");
+            uniqueName = false;
+        } else {
+            uniqueName = true;
+        }
+    });
+}
+
+function loadExisting(name) {
+    // Load exists character data
+    getCharacter(decodeHtml(name)).then((res) => {
+    
+        res.userPoints.forEach((value, index) => {
+            res.userPoints[index] = parseInt(value);
+        });
+    
+        character = new Character(
+            decodeHtml(res.name), //Name
+            decodeHtml(res.gender), // Gender
+            decodeHtml(res.biography), // Biography 
+            parseInt(decodeHtml(res.level)), // Level
+            parseInt(decodeHtml(res.age)), // Age
+            characterClass, // Class
+            characterRace, // Race
+            res.userPoints // Ability Points
+        );
+    
+        document.getElementById("name").value = decodeHtml(res.name);
+        document.getElementById("age").value = decodeHtml(res.age);
+        document.getElementById("gender").value = decodeHtml(res.gender);
+        document.getElementById("biography").value = decodeHtml(res.biography);
+        document.getElementById("level").value = decodeHtml(res.level);
+        
+        document.getElementById("races").value = decodeHtml(res.characterRace);
+        document.getElementById("classes").value = decodeHtml(res.characterClass);
+        userAbilityPoints = res.userPoints;
+        raceChanged();
+        classChanged();
+        displayAbilityPointsTotal();
+    });
+}
+
+function update() {
+    updateCharacter(character).then(() => {
+        
+    });
+}
+
+function createNew() {
+    return new Promise(async (resolve, reject) => {
+        Promise.all([
+            await loadRaceOptions(),
+            await loadClassOptions()
+        ]).then(() => {
+            try {
+                character = new Character(
+                    "John Smith", //Name
+                    "Male", // Gender
+                    "I love adventure", // Biography 
+                    1, // Level
+                    1, // Age
+                    characterClass, // Class
+                    characterRace, // Race
+                    userAbilityPoints // Ability Points
+                );
+                
+                updateHitPointsValue();
+                updateSpellcaster();
+                
+                resolve();
+                
+            } catch(error) {
+                if (typeof error == "TypeError") { 
+                } else {
+                }
+            } 
+        });
     });
 }
 
@@ -76,7 +144,6 @@ function loadClassOptions() {
             res = JSON.parse(res);
         
             if (res.error) {
-                console.error(res.error);
             } else {
                 
                 let classes = document.getElementById("classes");
@@ -99,12 +166,9 @@ function loadClassOptions() {
 function loadRaceOptions() {
     return new Promise((resolve, reject) => {
         get("/races").then(async (res) => {
-            console.log(res);
             res = JSON.parse(res);
-            console.log(res);
             
             if (res.error) {
-                console.error(res.error);
             } else {
                 
                 let races = document.getElementById("races");
@@ -142,22 +206,8 @@ async function getRaceInfo(url) {
     });
 }
 
-function updateLevel() {
-    let level = document.getElementById("level");
-    
-    if (level.value > 20) {
-        level.value = 20;
-    }
-    
-    if (level.value < 1) {
-        level.value = 1;
-    }
-    
-    updateHitPointsValue();
-}
-
 function displayAbilityPoints(index, id) {
-    let total = characterRace.ability_bonuses[index] + userAbilityPoints[index];
+    let total = parseInt(characterRace.ability_bonuses[index]) + parseInt(userAbilityPoints[index]);
     document.getElementById(id).innerHTML = userAbilityPoints[index] + " + " + characterRace.ability_bonuses[index]  + " = " + total;
 }
 
@@ -172,7 +222,6 @@ function incAbilityPoint(index, id) {
         character.setUserPoints(userAbilityPoints);
         displayAbilityPoints(index, id);
         displayAbilityPointsTotal();
-        console.log(character);
     }
 }
 
@@ -207,6 +256,7 @@ function updateAllAbilityPoints() {
 function nameChanged() {
     // Try change, if fails must be invalid
     try {
+        checkIfUnique(document.getElementById("name").value);
         this.character.setName(document.getElementById("name").value);
     } catch(error) {
         if(error.name == "TypeError") {
@@ -259,7 +309,19 @@ function biographyChanged() {
 function levelChanged() {
     // Try change, if fails must be invalid
     try {
+        let level = document.getElementById("level");
+        
+        if (level.value > 20) {
+            level.value = 20;
+        }
+        
+        if (level.value < 1) {
+            level.value = 1;
+        }
+
         this.character.setLevel(document.getElementById("level").value);
+        
+        updateHitPointsValue();
     } catch(error) {
         if(error.name == "TypeError") {
             alert(error.message);
@@ -271,8 +333,34 @@ function levelChanged() {
     }
 }
 
+function raceChanged() {
+    getRaceInfo().then(() => {
+        character.setCharacterRace(characterRace);
+        
+        updateHitPointsValue();
+        updateAllAbilityPoints();
+    });
+}
+
+function classChanged() {
+    getClassInfo().then(() => {
+        character.setCharacterClass(characterClass);
+        
+        updateHitPointsValue();
+        updateAllAbilityPoints();
+        updateSpellcaster();
+    });
+}
+
 function onSave() {
-    createCharacter(character);
+    let params = new URLSearchParams(document.location.search);
+    let name = params.get("name");
+    
+    if (name != null) {
+        update();
+    } else {
+        createCharacter(character);
+    }
 }
 
 function onDelete() {

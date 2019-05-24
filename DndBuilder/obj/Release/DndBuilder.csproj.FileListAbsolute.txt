@@ -1,0 +1,12 @@
+/home/will/Projects/DndBuilder/DndBuilder/bin/DndBuilder.dll
+/home/will/Projects/DndBuilder/DndBuilder/bin/Newtonsoft.Json.dll
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Net.Http.Formatting.dll
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Web.Http.dll
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Web.Http.WebHost.dll
+/home/will/Projects/DndBuilder/DndBuilder/bin/Newtonsoft.Json.xml
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Net.Http.Formatting.xml
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Web.Http.xml
+/home/will/Projects/DndBuilder/DndBuilder/bin/System.Web.Http.WebHost.xml
+/home/will/Projects/DndBuilder/DndBuilder/obj/Release/DndBuilder.csproj.CoreCompileInputs.cache
+/home/will/Projects/DndBuilder/DndBuilder/obj/Release/DndBuilder.csproj.CopyComplete
+/home/will/Projects/DndBuilder/DndBuilder/obj/Release/DndBuilder.dll

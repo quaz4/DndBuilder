@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using DndBuilder.Model;
 using Mono.Data.Sqlite;
@@ -17,12 +18,11 @@ namespace DndBuilder.Controllers
         {
         }
 
-        /* Fuction: getImage
+        /*
+         * Inserts a new character object into the db       
          * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+         * Params: Character object
+         * Returns: None
          */
         [HttpPost]
         [Route("character")]
@@ -33,85 +33,139 @@ namespace DndBuilder.Controllers
                 JArray jArray = JArray.Parse(req["userPoints"].ToString());
                 int[] ap = jArray.ToObject<int[]>();
 
+                // Convert to character object
                 Character newCharacter = new Character(
                     req["name"].ToString(),
                     Convert.ToInt32(req["age"]), //Age
                     req["gender"].ToString(),
                     req["biography"].ToString(),
                     Convert.ToInt32(req["level"]), //Level
-                    req["characterClass"].ToString(),
                     req["characterRace"].ToString(),
+                    req["characterClass"].ToString(),
                     ap
                 );
 
                 Database db = new Database();
                 db.Insert(newCharacter);
+
+                Ok(); // Return 200
             }
-            // TODO
-            catch(Exception e)
+            catch(ArgumentOutOfRangeException e)
             {
-                Console.WriteLine(e);
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+            catch (SqliteException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
             return StatusCode(HttpStatusCode.Created);
         }
 
+        /*
+         * Fetches a page of results     
+         * Type: Get
+         * Params: page int
+         * Returns: JSON containing min 0 max 10 pages
+         */
         [HttpGet]
         [Route("character/page/{page}")]
         public string ListPage(int page)
         {
-
-
             try
             {
                 Database db = new Database();
-                return db.ListPage(page).ToString(Formatting.None);
+                return db.ListPage(page).ToString();
             }
-            // TODO
-            catch (Exception e)
+            catch (SqliteException e)
             {
-                Console.WriteLine(e);
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
 
-        /* Fuction: getImage
-         * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+        /*
+         * Updates an existing character in the DB     
+         * Type: Put
+         * Params: Character object
+         * Returns: None
          */
         [HttpPut]
         [Route("character")]
-        public void UpdateCharacter([FromBody]Dictionary<string, object> req)
+        public IHttpActionResult UpdateCharacter([FromBody]Dictionary<string, object> req)
         {
             try
             {
                 JArray jArray = JArray.Parse(req["userPoints"].ToString());
                 int[] ap = jArray.ToObject<int[]>();
 
+                // Convert to Character object
                 Character newCharacter = new Character(
                     req["name"].ToString(),
                     Convert.ToInt32(req["age"]), //Age
                     req["gender"].ToString(),
                     req["biography"].ToString(),
                     Convert.ToInt32(req["level"]), //Level
-                    req["characterClass"].ToString(),
                     req["characterRace"].ToString(),
+                    req["characterClass"].ToString(),
                     ap
                 );
 
                 Database db = new Database();
                 db.Update(newCharacter);
+
+                return StatusCode(HttpStatusCode.OK);
             }
-            // TODO
-            catch (Exception e)
+            catch (SqliteException e)
             {
-                Console.WriteLine(e);
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
 
+        /*
+         * Gets an existing record in the array
+         * Type: Get
+         * Params: Character object
+         * Returns: JSON object with character info
+         */
+        [HttpGet]
+        [Route("character/{name}")]
+        public string Fetch(string name)
+        {
+            try
+            {
+                Database db = new Database();
+                Character rVal = db.Fetch(HttpUtility.HtmlDecode(name));
+
+                return rVal.ToJson().ToString();
+            }
+            catch (SqliteException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+        }
+
+        /*
+         * Returns true/false if name exists/doesn't exist   
+         * Type: Get
+         * Params: name string
+         * Returns: boolean
+         */
         [HttpGet]
         [Route("character/exists/{name}")]
         public bool Exists(string name)
@@ -123,37 +177,50 @@ namespace DndBuilder.Controllers
                 Database db = new Database();
                 exists = db.Exists(name);
             }
-            // TODO
-            catch (Exception e)
+            catch (SqliteException e)
             {
-                Console.WriteLine(e);
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
             return exists;
         }
 
+        /*
+         * Deletes a record based on name 
+         * Type: Delete
+         * Params: name string
+         * Returns: None
+         */
         [HttpDelete]
         [Route("character/{name}")]
-        public void DeleteCharacter(string name)
+        public IHttpActionResult DeleteCharacter(string name)
         {
             try
             {
                 Database db = new Database();
-                db.Delete(name);
+                db.Delete(HttpUtility.HtmlDecode(name));
+
+                return StatusCode(HttpStatusCode.OK);
             }
-            // TODO
-            catch (Exception e)
+            catch (SqliteException e)
             {
-                Console.WriteLine(e);
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
 
-        /* Fuction: getImage
-         * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+        /*
+         * Contacts an external API and returns a list of classes
+         * Type: Get
+         * Params: None
+         * Returns: JSON
          */
         [HttpGet]
         [Route("classes")]
@@ -166,20 +233,22 @@ namespace DndBuilder.Controllers
 
                 return result.ToString(Newtonsoft.Json.Formatting.None);
             }
-            catch
+            catch (SqliteException e)
             {
-                throw new HttpResponseException(this.Request.CreateResponse<object>
-                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));  
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
         }
 
-        /* Fuction: getImage
-         * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+        /*
+         * Gets a specific class from an external API
+         * Type: Get
+         * Params: None
+         * Returns: JSON
          */
         [HttpGet]
         [Route("class/{dndClass}")]
@@ -192,21 +261,22 @@ namespace DndBuilder.Controllers
 
                 return result.ToString(Newtonsoft.Json.Formatting.None);
             }
-            catch
+            catch (SqliteException e)
             {
-                // TODO
-                throw new HttpResponseException(this.Request.CreateResponse<object>
-                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
         }
 
-        /* Fuction: getImage
-         * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+        /*
+         * Contacts an external API and returns a list of races
+         * Type: Get
+         * Params: None
+         * Returns: JSON
          */
         [HttpGet]
         [Route("races")]
@@ -219,20 +289,21 @@ namespace DndBuilder.Controllers
 
                 return result.ToString(Newtonsoft.Json.Formatting.None);
             }
-            catch
+            catch (SqliteException e)
             {
-                // TODO
-                throw new HttpResponseException(this.Request.CreateResponse<object>
-                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
 
-        /* Fuction: getImage
-         * Type: Post
-         * Parameters: zoom level, x coordinate, y coordinate
-         * Return: byte[]
-         * Assertion: function returns a dummy image, regardless of input.
-         * Note: Post version of the previous method.
+        /*
+         * Contacts an external API and specific race
+         * Type: Get
+         * Params: dndRace string
+         * Returns: JSON
          */
         [HttpGet]
         [Route("race/{dndRace}")]
@@ -245,13 +316,14 @@ namespace DndBuilder.Controllers
 
                 return result.ToString(Newtonsoft.Json.Formatting.None);
             }
-            catch
+            catch (SqliteException e)
             {
-                // TODO
-                throw new HttpResponseException(this.Request.CreateResponse<object>
-                    (HttpStatusCode.InternalServerError, "Error occurred: An unknown error has occured"));
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
-
+            catch (ArgumentException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
         }
     }
 }

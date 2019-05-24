@@ -3,6 +3,10 @@ using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
 
+/* 
+ * Abstract class defining what methods can be used when fetching dnd information
+ * from a 3rd party
+ */
 namespace DndBuilder.Model
 {
     public abstract class Api
@@ -28,9 +32,8 @@ namespace DndBuilder.Model
         /* 
          * Perform an HTTP request to the specified path of the base path
          * Params: string path, route to get particular
-         * Throws:        
+         * Throws: InvalidDataException
          */
-         // TODO: Exceptions?
         protected JObject GetRequest(string path)
         {
             string url;
@@ -44,31 +47,31 @@ namespace DndBuilder.Model
                 url = this.baseUrl + path;
             }
 
-            // Create the request object
-            HttpWebRequest request = WebRequest.CreateHttp(url);
+            try
+            {
+                // Create the request object
+                HttpWebRequest request = WebRequest.CreateHttp(url);
 
-            // Extract the response and convert it to a JObject
-            WebResponse response = (HttpWebResponse)request.GetResponse();
-            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-            JObject res = JObject.Parse(responseString);
+                // Extract the response and convert it to a JObject
+                WebResponse response = (HttpWebResponse)request.GetResponse();
+                string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                JObject res = JObject.Parse(responseString);
 
-            return res;
+                return res;
+            }
+            catch
+            {
+                throw new InvalidDataException();
+            }
+
         }
-
-        // Character CRUD
-        public abstract JObject CreateCharacter(Character character);
-        public abstract JObject GetCharacter(string name);
-        public abstract JObject UpdateCharacter(Character character);
-        public abstract void DeleteCharacter(string name);
 
         // Race
         public abstract JObject GetRaces();
-        public abstract JObject GetRace(int id);
         public abstract JObject GetRace(string name);
 
         // Class
         public abstract JObject GetClasses();
-        public abstract JObject GetClass(int id);
         public abstract JObject GetClass(string name);
     }
 }

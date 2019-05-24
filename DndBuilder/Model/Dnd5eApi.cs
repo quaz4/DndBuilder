@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Web;
 using Newtonsoft.Json.Linq;
 
 namespace DndBuilder.Model
@@ -22,37 +21,8 @@ namespace DndBuilder.Model
             this.baseUrl = baseUrl;
         }
 
-        public override JObject CreateCharacter(Character character)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void DeleteCharacter(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override JObject GetCharacter(string name)
-        {
-            // Ensure name is not empty
-            if (name.Length == 0)
-            {
-                throw new ArgumentException("Character name cannot be empty");
-            }
-
-            // TODO: DB request
-
-            return null;
-        }
-
-        public override JObject GetClass(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         /*
-         * 
-         * Throws: ArgumentException, KeyNotFoundException
+         * Throws: ArgumentException
          */
         public override JObject GetClass(string name)
         {
@@ -65,32 +35,68 @@ namespace DndBuilder.Model
             // Get list of classes
             JObject classes = this.GetClasses();
 
-            // Search for objects with specified name
+            // Search for object with specified name
             JToken selected = classes.SelectToken("$.results[?(@.name == '" + name + "')]");
 
             // Throw exception if no object found
             if (selected == null)
             {
-                throw new KeyNotFoundException("Unable to find requested class");
+                throw new ArgumentException("Unable to find requested class");
             }
 
             // Using url from object, get the resource at the url
             JObject res = this.GetRequest((string)selected["url"]);
 
-            Console.WriteLine(res);
+            bool spellcaster = true;
 
-            return res;
+            JObject rVal = new JObject();
+
+            try
+            {
+                if (res["spellcasting"] == null)
+                {
+                    spellcaster = false;
+                }
+
+                // Sanitise data
+                rVal = new JObject(
+                    new JProperty("name", HttpUtility.HtmlEncode(res["name"])),
+                    new JProperty("hit_die", HttpUtility.HtmlEncode(res["hit_die"])),
+                    new JProperty("spellcasting", HttpUtility.HtmlEncode(spellcaster))
+                );
+            }
+            catch (InvalidCastException e)
+            {
+                throw new InvalidCastException("Error fetching class: " + e.Message);
+            }
+
+            return rVal;
         }
 
         public override JObject GetClasses()
         {
-            JObject res = this.GetRequest("/classes");
-            return res;
-        }
+            try
+            {
+                JObject res = this.GetRequest("/classes");
+                JObject rVal = new JObject();
+                JArray arr = new JArray();
+                JProperty prop = new JProperty("results", arr);
 
-        public override JObject GetRace(int id)
-        {
-            throw new NotImplementedException();
+                // Sanitise the links
+                for (int i = 0; i < (int)res["count"]; i++)
+                {
+                    arr.Add( new JValue( HttpUtility.HtmlEncode(res["results"][i]["url"] )));
+                }
+
+                rVal.Add(prop);
+
+                return res;
+            }
+            catch(SystemException e)
+            {
+                throw new ArgumentException("There was a problem getting classes: " + e.Message);
+            }
+
         }
 
         public override JObject GetRace(string name)
@@ -116,18 +122,55 @@ namespace DndBuilder.Model
             // Using url from object, get the resource at the url
             JObject res = this.GetRequest((string)selected["url"]);
 
-            return res;
+            JObject rVal = new JObject();
+
+            try
+            {
+                // Sanitise and reduce data
+                rVal = new JObject(
+                    new JProperty("name", HttpUtility.HtmlEncode(res["name"])),
+                    new JProperty("ability_bonuses", new JArray(
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][0])),
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][1])),
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][2])),
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][3])),
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][4])),
+                       new JValue(HttpUtility.HtmlEncode(res["ability_bonuses"][5]))
+                   ))
+                );
+            }
+            catch (SystemException e)
+            {
+                throw new ArgumentException("There was a problem getting classes: " + e.Message);
+            }
+
+
+            return rVal;
         }
 
         public override JObject GetRaces()
         {
-            JObject res = this.GetRequest("/races");
-            return res;
-        }
+            try
+            {
+                JObject res = this.GetRequest("/races");
+                JObject rVal = new JObject();
+                JArray arr = new JArray();
+                JProperty prop = new JProperty("results", arr);
 
-        public override JObject UpdateCharacter(Character character)
-        {
-            throw new NotImplementedException();
+                // Sanitise the links
+                for (int i = 0; i < (int)res["count"]; i++)
+                {
+                    arr.Add(new JValue(HttpUtility.HtmlEncode(res["results"][i]["url"])));
+                }
+
+                rVal.Add(prop);
+
+                return res;
+            }
+            catch (SystemException e)
+            {
+                throw new ArgumentException("There was a problem getting classes: " + e.Message);
+            }
         }
     }
 }

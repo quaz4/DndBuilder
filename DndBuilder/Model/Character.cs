@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using Newtonsoft.Json.Linq;
 
 namespace DndBuilder.Model
@@ -46,9 +47,8 @@ namespace DndBuilder.Model
                 throw new ArgumentOutOfRangeException("Gender has an invalid length of " + Gender.Length);
             }
 
-            // Biography must exist
-            // TODO: Check if it actually needs to contain anything, as it is up to 500
-            if (Biography.Length <= 0)
+            // Biography must exist and not be greater than 500 characters
+            if (Biography.Length <= 0 || Biography.Length > 500)
             {
                 throw new ArgumentOutOfRangeException("Biography has an invalid length of " + Biography.Length);
             }
@@ -125,23 +125,25 @@ namespace DndBuilder.Model
 
         public int GetWisdom() => this.UserPoints[5];
 
+        // Converts object to JSON so it can be sent over the web and used in
+        // other contexts
         public JObject ToJson()
         {
             JObject character = new JObject(
-                new JProperty("name", this.Name),
-                new JProperty("age", this.Age),
-                new JProperty("level", this.Level),
-                new JProperty("gender", this.Gender),
-                new JProperty("biography", this.Biography),
-                new JProperty("characterClass", this.CharacterClass),
-                new JProperty("characterRace", this.CharacterRace),
+                new JProperty("name", HttpUtility.HtmlEncode(this.Name)),
+                new JProperty("age", HttpUtility.HtmlEncode(this.Age)),
+                new JProperty("level", HttpUtility.HtmlEncode(this.Level)),
+                new JProperty("gender", HttpUtility.HtmlEncode(this.Gender)),
+                new JProperty("biography", HttpUtility.HtmlEncode(this.Biography)),
+                new JProperty("characterClass", HttpUtility.HtmlEncode(this.CharacterClass)),
+                new JProperty("characterRace", HttpUtility.HtmlEncode(this.CharacterRace)),
                 new JProperty("userPoints", new JArray(
-                    new JValue(this.UserPoints[0]),
-                    new JValue(this.UserPoints[1]),
-                    new JValue(this.UserPoints[2]),
-                    new JValue(this.UserPoints[3]),
-                    new JValue(this.UserPoints[4]),
-                    new JValue(this.UserPoints[5])
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[0])),
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[1])),
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[2])),
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[3])),
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[4])),
+                    new JValue(HttpUtility.HtmlEncode(this.UserPoints[5]))
                 ))
             );
 

@@ -23,6 +23,10 @@
         
         <div class="content">
             <div class="card">
+                <a href="#" onclick="character.toXML()" >Download</a>
+            </div>
+           
+            <div class="card">
                 <label>Name</label>
                 <input id="name" type="text" onchange="nameChanged()">
             </div>
@@ -44,19 +48,19 @@
             
             <div class="card">
                 <label>Level</label>
-                <input id="level" type="number" onchange="updateLevel()" min="1" max="20">
+                <input id="level" type="number" onchange="levelChanged()" min="1" max="20">
             </div>
             
             <div class="card">
                 <label>Race</label>
-                <select id="races" required="true" onchange="getRaceInfo()">
+                <select id="races" required="true" onchange="raceChanged()">
                     <option>Loading...</option>
                 </select>
             </div>
             
             <div class="card">
                 <label>Class</label>
-                <select id="classes" required="true" onchange="getClassInfo()">
+                <select id="classes" required="true" onchange="classChanged()">
                     <option>Loading...</option>
                 </select>
             </div>

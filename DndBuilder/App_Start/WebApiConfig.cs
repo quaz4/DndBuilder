@@ -30,28 +30,30 @@ namespace DndBuilder
             // defaults: new {id = RouteParameter.Optional}
             // );
 
-            GlobalConfiguration.Configuration.Formatters.XmlFormatter.
-            SupportedMediaTypes.Clear();
-            config.Formatters.Insert(0, new System.Net.Http.Formatting.
-            JsonMediaTypeFormatter());
+            // TODO: was uncommented
+            //GlobalConfiguration.Configuration.Formatters.XmlFormatter.
+            //SupportedMediaTypes.Clear();
+            //config.Formatters.Insert(0, new System.Net.Http.Formatting.
+            //JsonMediaTypeFormatter());
 
             // Apply this GLOBALLY so that we don 't have to be bothered
             // with it during other JSON operations
             // TODO: was uncommented
-            Newtonsoft.Json.JsonConvert.DefaultSettings = () =>
-            new Newtonsoft.Json.JsonSerializerSettings
-            {
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                ReferenceLoopHandling = Newtonsoft.Json.
-                ReferenceLoopHandling.Ignore
-            };
+            //Newtonsoft.Json.JsonConvert.DefaultSettings = () =>
+            //new Newtonsoft.Json.JsonSerializerSettings
+            //{
+            //    Formatting = Newtonsoft.Json.Formatting.Indented,
+            //    ReferenceLoopHandling = Newtonsoft.Json.
+            //    ReferenceLoopHandling.Ignore
+            //};
 
             /* If we don't do this then JSON will send dates in a local - time
             format that is not consistently interpreted by Chrome and IE
             ( the default format misses defining the timezone , so it is USELESS .
             This one will always be UTC )*/
-            config.Formatters.JsonFormatter.SerializerSettings.
-            DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+            // TODO: was uncommented
+            //config.Formatters.JsonFormatter.SerializerSettings.
+            //DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
         }
     }
 }

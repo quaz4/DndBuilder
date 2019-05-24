@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="/Resources/CSS/DndBuilder.css">
         
         <script src="/Resources/JS/Util.js"></script>
+        <script src="/Resources/JS/Api.js"></script>
         <script src="/Resources/JS/Find.js"></script>
         <script src="/Resources/JS/Character.js"></script>
         <script src="/Resources/JS/DndBuilder.js"></script>
@@ -23,8 +24,14 @@
         <div class="content">
             <div class="card">
                 <label>Load by Name</label>
-                <input id="name" type="text" onchange="nameChanged()">
+                <input id="name" type="text">
+                <button id="goButton" onclick="go()">Go</button>
             </div>
+            
+            <div id="list"></div>
+            
+            <button id="nextButton" onclick="nextPage()">Next Page</button>
+            <button id="previousButton" onclick="previousPage()">Previous Page</button>
         </div>
         
         <footer>

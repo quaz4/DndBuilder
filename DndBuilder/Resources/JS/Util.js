@@ -1,16 +1,15 @@
-﻿/* TODO
-* Function that wraps a GET request, taking a url and a callback
+﻿/*
+* Functions that handle basic HTTP actions
 *   
-* url: The address to make the GET requst at
-* callback: The function to be called upon the completion of the request,
-* is is passed a results object that either contains an error or data
+* url: The address to make the request at
+* Returns: A Promise
 */
 function get(url) {
     return new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
     
         request.open("GET", url, true);
-
+        
         request.onreadystatechange = () => {
 
             if (request.readyState == 4) {
@@ -69,7 +68,7 @@ function put(url, body) {
         request.send(JSON.stringify(body));
     });
 }
-
+ 
 function deleteRequest(url) {
     return new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
@@ -89,4 +88,13 @@ function deleteRequest(url) {
         
         request.send();
     });
+}
+
+// Decode encoded html
+// WARNING: Do not display any values returned from this function
+// as they may be unsafe
+function decodeHtml(html) {
+    let txtArea = document.createElement("textarea");
+    txtArea.innerHTML = html;
+    return txtArea.value;
 }

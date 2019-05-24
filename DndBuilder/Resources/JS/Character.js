@@ -67,6 +67,14 @@ var Character = class Character {
         this.age = age;
     }
     
+    getClass() {
+        return this.characterClass.name;
+    }
+  
+    getRace() {
+        return this.characterRace.name;
+    }
+    
     /*
      * Level setter
      * Params: level, an int >= 1 and <= 20
@@ -91,7 +99,6 @@ var Character = class Character {
      */
     setUserPoints(userPointsArray) {
         // Ensure the array is of size 6
-        console.log(userPointsArray.length);
         if(userPointsArray.length != 6) {
             throw RangeError("userPointsArray array must have a length of 6");
         }
@@ -107,7 +114,7 @@ var Character = class Character {
         let total = 0;
     
         userPointsArray.forEach((value) => {
-           total = total + value; 
+           total = total + value;
         });
         
         if(total > 20) {
@@ -206,11 +213,89 @@ var Character = class Character {
     
     get spellcaster() {
         let caster = false;
-    
-        if(this.characterClass.spellcasting) {
+
+        if(this.characterClass.spellcasting == "True") {
             caster = true;
         }
         
         return caster;
+    }
+    
+    output() {
+        return {
+            "name": this.name,
+            "level": this.level,
+            "age": this.age,
+            "gender": this.gender,
+            "biography": this.biography,
+            "characterClass": this.characterClass.name,
+            "characterRace": this.characterRace.name,
+            "userPoints": this.userPoints
+        }
+    }
+    
+    toXML() {
+        let xmlString = 
+        '<?xml version="1.0" encoding="UTF-8"?>' +
+        "<Character>" +
+            "<Name>" + this.name + "</Name>" +
+            "<Age>" + this.age + "</Age>" +
+            "<Gender>" + this.gender + "</Gender>" +
+            "<Biography>" + this.biography + "</Biography>" +
+            "<Level>" + this.level + "</Level>" +
+            "<Class>" + this.characterClass.name + "</Class>" +
+            "<Race>" + this.characterRace.name + "</Race>" +
+            "<Spellcaster>" + this.spellcaster + "</Spellcaster>" +
+            "<Hitpoints>" + this.hitpoints + "</Hitpoints>" +
+            "<AbilityPoints>" +
+                "<Constitution>" +
+                    "<Points>" + userAbilityPoints[0] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[0] + "</Bonus>" +
+                "</Constitution>" +
+                "<Dexterity>" +
+                    "<Points>" + userAbilityPoints[1] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[1] + "</Bonus>" +
+                "</Dexterity>" +
+                "<Strength>" +
+                    "<Points>" + userAbilityPoints[2] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[2] + "</Bonus>" +
+                "</Strength>" +
+                "<Charisma>" +
+                    "<Points>" + userAbilityPoints[3] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[3] + "</Bonus>" +
+                "</Charisma>" +
+                "<Intelligence>" +
+                    "<Points>" + userAbilityPoints[4] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[4] + "</Bonus>" +
+                "</Intelligence>" +
+                "<Wisdom>" +
+                    "<Points>" + userAbilityPoints[5] + "</Points>" +
+                    "<Bonus>" + characterRace.ability_bonuses[5] + "</Bonus>" +
+                "</Wisdom>" +
+            "</AbilityPoints>" +
+        "</Character>";
+        
+        var oParser = new DOMParser();
+        var oDOM = oParser.parseFromString(xmlString, "application/xml");
+        
+        let blob = new Blob(
+            [ xmlString ],
+            {
+                type : "text/xml;charset=utf-8"
+            }
+        );
+        
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        
+        let url = window.URL.createObjectURL(blob);
+        
+        a.href = url;
+        a.download = "character.xml";
+        a.click();
+        
+        window.URL.revokeObjectURL(url);
+        //console.log(oDOM.documentElement);    
     }
 }
